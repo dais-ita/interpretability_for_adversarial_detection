@@ -37,7 +37,7 @@ from foolbox.attacks import LBFGSAttack, DeepFoolAttack, GradientAttack, Boundar
 from PIL import Image
 
 
-# print(foolbox.__file__)
+print(foolbox.__file__)
 
 flags = tf.flags
 logging = tf.logging
@@ -131,7 +131,8 @@ with tf.Session(config=config) as sess:
 
     d = feed_dict(mnist, False) #load the mnist data
     
-
+    print(x)
+    print(y)
     ### initialisation of the adversarial attack variables
     model = TensorFlowModel(x, y, bounds=(-1, 1)) #model used by the attacks
 
