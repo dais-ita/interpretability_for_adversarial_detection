@@ -175,7 +175,7 @@ with tf.Session(config=config) as sess:
 
         ground_truths = [] #contains the training data to be output to a csv file
 
-        for i in range(len(d[0][:1])): #for each MNIST image in the batch loaded in d[0]
+        for i in range(len(d[0][:])): #for each MNIST image in the batch loaded in d[0]
 
             ###fetch and save the image from MNIST
             image = d[0][i]
@@ -218,7 +218,7 @@ with tf.Session(config=config) as sess:
             y1, relevance_test, rel_layer= sess.run([y, LRP, relevance_layerwise], feed_dict=test_inp) #make class prediciton
             relevance_test = relevance_test[:,2:30,2:30,:]
             images = test_inp[x]
-            relevance_image = produce_relevance_image(relevance_test.reshape([1,28,28,1]), images )
+            relevance_image = produce_relevance_image(relevance_test.reshape([1,28,28,1]) )
             
             save_im = relevance_image.reshape(28,28,3)
             save_im = (255.0 / save_im.max() * (save_im - save_im.min())).astype(np.uint8)
@@ -234,7 +234,7 @@ with tf.Session(config=config) as sess:
             y1, relevance_test, rel_layer= sess.run([y, LRP, relevance_layerwise], feed_dict=test_inp)
             relevance_test = relevance_test[:,2:30,2:30,:]
             images = test_inp[x]
-            relevance_image = produce_relevance_image(relevance_test.reshape([1,28,28,1]), images )
+            relevance_image = produce_relevance_image(relevance_test.reshape([1,28,28,1]) )
             
             save_im = relevance_image.reshape(28,28,3)
             save_im = (255.0 / save_im.max() * (save_im - save_im.min())).astype(np.uint8)

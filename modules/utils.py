@@ -42,7 +42,7 @@ def plot_relevances(rel, img, writer):
 ########
 
 
-def produce_relevance_image(rel,img):
+def produce_relevance_image(rel,img=None):
     return visualize_image(rel, img)
 
 def visualize_image(relevances, images_tensor=None):
@@ -55,6 +55,7 @@ def visualize_image(relevances, images_tensor=None):
         if images_tensor is not None:
             input_image = images_tensor[h]
             maps = render.hm_to_rgb(heat, input_image, scaling = 1, sigma = 2)
+            
         else:
             maps = render.hm_to_rgb(heat, scaling = 1, sigma = 2)
         heatmaps.append(maps)
