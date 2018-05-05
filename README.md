@@ -8,4 +8,5 @@ After installing python module requirements, place the files found in 'foolbox_r
 Run cifar_util.py using python2 (due to the way the cifar images were 'pickled') to produce the cifar_10 images used to produce the adversarial detector training data. 
 
 mnist training data generation: generate_training_images.py
+
 cifar_10 training data generation: cifar_generate_training_images.py
