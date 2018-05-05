@@ -9,7 +9,6 @@ import random
 
 def SaveImage(image_array,im_output_path):
 	save_im = image_array
-	print(save_im)
 	save_im = (255.0 / save_im.max() * (save_im - save_im.min())).astype(np.uint8)
 	im = Image.fromarray(save_im)
 	im.save(im_output_path)
@@ -121,19 +120,24 @@ if __name__ == '__main__':
 
 	training_batch_files = os.listdir(training_path)
 	test_batch_files = os.listdir(test_path)
-
 	
 
+	output_dir = os.path.join(cifar_dir,"cifar_10_images")
+
+	if(not os.path.exists(output_dir)):
+		os.mkdir(output_dir)
+
 	if(training):
-		output_save_path = os.path.join(cifar_dir,"cifar_10_images","training")
+		output_save_path = os.path.join(output_dir,"training")
+		if(not os.path.exists(output_save_path)):
+			os.mkdir(output_save_path)
 
 		for batch_i in range(len(training_batch_files))[:]:
 			training_batch_file = training_batch_files[batch_i]
 			batch_file_path = os.path.join(training_path,training_batch_file)
 			training_batch_dict = unpickle(batch_file_path)
 
-			print(training_batch_dict["data"].shape)
-
+			
 			batch_size = training_batch_dict["data"].shape[0]
 			for image_i in range(batch_size)[:]:
 				gt_label = training_batch_dict["labels"][image_i]
@@ -144,15 +148,16 @@ if __name__ == '__main__':
 				im_output_path = os.path.join(output_save_path,str(batch_i)+"_"+str(image_i)+"_"+str(gt_label)+".jpg")
 				SaveImage(image_array,im_output_path)
 	if(test):
-		output_save_path = os.path.join(cifar_dir,"cifar_10_images","test")
+		output_save_path = os.path.join(output_dir,"test")
+		if(not os.path.exists(output_save_path)):
+			os.mkdir(output_save_path)
 
 		for batch_i in range(len(test_batch_files))[:]:
 			test_batch_file = test_batch_files[batch_i]
 			batch_file_path = os.path.join(test_path,test_batch_file)
 			test_batch_dict = unpickle(batch_file_path)
 
-			print(test_batch_dict["data"].shape)
-
+			
 			batch_size = test_batch_dict["data"].shape[0]
 			for image_i in range(batch_size)[:]:
 				gt_label = test_batch_dict["labels"][image_i]
