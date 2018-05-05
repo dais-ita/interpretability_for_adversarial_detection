@@ -99,3 +99,19 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#mnist data archives
+/data/*.gz
+
+#cifar image folder
+cifar_data/cifar_10_images/test/*.jpg
+cifar_data/cifar_10_images/train/*.jpg
+
+#generated data folders
+/training_data
+/cifar_training_data
+
+#log directories
+/mnist_convolutional_logs
+
+

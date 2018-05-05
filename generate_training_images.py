@@ -138,7 +138,7 @@ with tf.Session(config=config) as sess:
 
     attacks = [] 
 
-    attacks.append(("LBFGSAttack", LBFGSAttack(model)))
+    #attacks.append(("LBFGSAttack", LBFGSAttack(model)))
     attacks.append(("DeepFoolAttack", DeepFoolAttack(model)))
     # attacks.append(("BoundaryAttack", BoundaryAttack(model))) # this attack currently doesn't work
     attacks.append(("GradientAttack", GradientAttack(model)))
