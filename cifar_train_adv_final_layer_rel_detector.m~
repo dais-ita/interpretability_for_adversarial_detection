@@ -1,0 +1,56 @@
+%attack_name = "DeepFoolAttack";
+attack_name = "GradientAttack";
+% attack_name = "LBFGSAttack";
+
+rel_path = str2mat('cifar_training_data/'+attack_name+'_rels.csv');
+rel_gt_path = str2mat('cifar_training_data/'+attack_name+'_rels_gt.csv');
+
+
+rels = csvread(rel_path);
+rels_gt = csvread(rel_gt_path);
+rels_gt = categorical(rels_gt(:,1) == 0);
+
+num_datas = size(rels,1);
+final_class1 = num_datas/2;
+class1_train_end = final_class1*0.8;
+class2_start = final_class1+1l
+class2_train_end = num_datas*0.8;
+
+
+train_class_1 = rels(0:class1_train_end,:);
+train_class_2 = rels(final_class1+1:class2_train_end,:);
+ 
+
+x_train = rels;%(751:end,:);
+x_train = reshape(x_train,[10,1,1,num_datas]);
+
+y_train = rels_gt;%(751:end,:);
+
+x_val = rels;%(1:750,:);
+x_val = reshape(x_val,[10,1,1,num_datas]);
+
+y_val = rels_gt;%(1:750,end);
+
+layers = [
+    imageInputLayer([10 1 1])
+    fullyConnectedLayer(10)
+    fullyConnectedLayer(10)
+    fullyConnectedLayer(2)
+    softmaxLayer
+    classificationLayer];
+
+options = trainingOptions('sgdm', ...
+    'MaxEpochs',100, ...
+    'ValidationData',{x_val,y_val}, ...
+    'ValidationFrequency',30, ...
+    'ValidationPatience',30, ...
+    'Verbose',false, ...
+    'Plots','training-progress');
+
+
+net = trainNetwork(x_train,y_train,layers,options);
+
+YPred = classify(net,x_val);
+YValidation = y_val;
+
+accuracy = sum(YPred == YValidation)/numel(YValidation)

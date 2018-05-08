@@ -1,8 +1,8 @@
-attack_name = "DeepFoolAttack";
-%attack_name = "GradientAttack";
+%attack_name = "DeepFoolAttack";
+attack_name = "GradientAttack";
 %attack_name = "LBFGSAttack";
 
-data_folder = str2mat('cifar_training_data/' + attack_name +'/input_images');
+data_folder = str2mat('training_data/' + attack_name +'/input_images');
 imds = imageDatastore(data_folder,'IncludeSubfolders',true,'LabelSource','foldernames');
 
 
@@ -11,7 +11,7 @@ numTrainFiles = round(size(imds.Labels,1) * 0.4);
 
 
 layers = [
-    imageInputLayer([32 32 1])
+    imageInputLayer([28 28 1])
     
     convolution2dLayer(3,8,'Padding',1)
     batchNormalizationLayer

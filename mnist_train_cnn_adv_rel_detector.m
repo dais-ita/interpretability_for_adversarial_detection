@@ -1,32 +1,32 @@
-attack_name = "DeepFoolAttack";
-%attack_name = "GradientAttack";
+%attack_name = "DeepFoolAttack";
+attack_name = "GradientAttack";
 %attack_name = "LBFGSAttack";
 
-data_folder = str2mat('cifar_training_data/' + attack_name +'/input_images');
+data_folder = str2mat('training_data/' + attack_name +'/rel_images');
 imds = imageDatastore(data_folder,'IncludeSubfolders',true,'LabelSource','foldernames');
 
 
-numTrainFiles = round(size(imds.Labels,1) * 0.4); 
+numTrainFiles = round(size(imds.Labels,1) * 0.4); %num train files per class so 0.8/2 = 0.4
 [imdsTrain,imdsValidation] = splitEachLabel(imds,numTrainFiles,'randomize');
 
 
 layers = [
-    imageInputLayer([32 32 1])
+    imageInputLayer([28 28 3])
     
     convolution2dLayer(3,8,'Padding',1)
-    batchNormalizationLayer
+    %batchNormalizationLayer
     reluLayer
     
     maxPooling2dLayer(2,'Stride',2)
     
     convolution2dLayer(3,16,'Padding',1)
-    batchNormalizationLayer
+    %batchNormalizationLayer
     reluLayer
     
     maxPooling2dLayer(2,'Stride',2)
     
     convolution2dLayer(3,32,'Padding',1)
-    batchNormalizationLayer
+    %batchNormalizationLayer
     reluLayer
     
     fullyConnectedLayer(2)

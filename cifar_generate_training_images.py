@@ -270,6 +270,10 @@ with tf.Session(config=config) as sess:
 
         ground_truths = [] #contains the training data to be output to a csv file
 
+        rel_layer_index = 1
+        normal_final_layer_rels = [] #contains relvancy vectors for the final layer of the task generated when the network processes 'normal' images
+        attack_final_layer_rels = [] #contains relvancy vectors for the final layer of the task generated when the network processes adversarial images
+        
         for i in range(len(d[0][:])): #for each MNIST image in the batch loaded in d[0]
             image_stats_dict[attack_t[0]]["total_images"] += 1
             ###fetch and save the image from MNIST
@@ -319,6 +323,9 @@ with tf.Session(config=config) as sess:
 
             test_inp = {x:rel_inp, y_: d[1][i:i+1], keep_prob: d[2]} #form feed dict
             y1, relevance_test, rel_layer= sess.run([y, LRP, relevance_layerwise], feed_dict=test_inp) #make class prediciton
+            
+            normal_final_layer_rels.append(np.array(rel_layer[rel_layer_index]).reshape(rel_layer[rel_layer_index].size)) #store the final layer's relevancy map
+
             relevance_test = relevance_test[:,2:34,2:34,:]
             images = test_inp[x]
             relevance_image = produce_relevance_image(relevance_test.reshape([1,32,32,num_channels]) )
@@ -335,6 +342,9 @@ with tf.Session(config=config) as sess:
 
             test_inp = {x:adv_inp, y_: d[1][i:i+1], keep_prob: d[2]}
             y1, relevance_test, rel_layer= sess.run([y, LRP, relevance_layerwise], feed_dict=test_inp)
+            
+            attack_final_layer_rels.append(np.array(rel_layer[rel_layer_index]).reshape(rel_layer[rel_layer_index].size)) #store the final layer's relevancy map
+
             relevance_test = relevance_test[:,2:34,2:34,:]
             images = test_inp[x]
             relevance_image = produce_relevance_image(relevance_test.reshape([1,32,32,num_channels]) )
@@ -350,6 +360,24 @@ with tf.Session(config=config) as sess:
             print("adversarial label: "+str(adv_label))
 
             ground_truths.append( (str(i),str(im_output_path),str(adv_im_output_path),str(rel_im_output_path),str(adv_rel_im_output_path),str(label),str(adv_label)) )
+
+        rel_output_string = ""
+        rel_gt_string = ""
+        for rel in normal_final_layer_rels:
+            rel_output_string+= ",".join([str(val) for val in list(rel)]) + "\n"
+            rel_gt_string += "0\n"
+
+        for rel in attack_final_layer_rels:
+            rel_output_string+= ",".join([str(val) for val in list(rel)]) + "\n"
+            rel_gt_string += "1\n"
+
+        rel_output_path = os.path.join(training_data_path,attack_t[0]+"_rels.csv")
+        with open(rel_output_path,"w") as f:
+            f.write(rel_output_string)
+
+        rel_gt_output_path = os.path.join(training_data_path,attack_t[0]+"_rels_gt.csv")
+        with open(rel_gt_output_path,"w") as f:
+            f.write(rel_gt_string)
 
         print("Num of no adversarials:")
         print(len(no_adversarial_list))
